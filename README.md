@@ -1,6 +1,6 @@
-# Nouveau Power Knowledge Graph: Neo4j
+# People Analytics Knowledge Graph: Neo4j
 
-This is a project for mapping Nouveau Power that runs a [Neo4j](https://neo4j.com/) graph database in Docker containers.
+This is a project for mapping People Analytics that runs a [Neo4j](https://neo4j.com/) graph database in Docker containers.
 
 It takes a bunch o' stuff from the [GRANDstack](https://grandstack.io/) toolkit, begining with the [GRANDstack starter](https://github.com/grand-stack/grand-stack-starter).
 
