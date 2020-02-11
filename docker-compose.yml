@@ -38,7 +38,7 @@ services:
     ports:
       - 4001:4001
     volumes:
-        - ./api:/app/
+      - './api/:/app'
     environment:
       - NEO4J_URI=bolt://${PROJECT_NAME}_neo4j:${NEO4J_BOLT_PORT_NUMBER}
       - NEO4J_USER=neo4j
@@ -62,10 +62,11 @@ services:
     # ports:
     #   - ${UI_LISTEN_PORT}:${UI_LISTEN_PORT}
     volumes:
-      - ./ui:/app/
+      - './ui:/app/'
     environment:
       - REACT_APP_GRAPHQL_URI=/graphql
       - PROXY=http://${PROJECT_NAME}_api:4001/graphql
+      - NODE_ENV=development
     labels:
       - 'traefik.backend=ui'
       - 'traefik.port=${UI_LISTEN_PORT}'

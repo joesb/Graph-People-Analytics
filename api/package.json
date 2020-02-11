@@ -1,7 +1,7 @@
 {
-  "name": "grand-stack-starter-api",
+  "name": "graph-people-analytics-api",
   "version": "0.0.1",
-  "description": "API app for GRANDstack",
+  "description": "People Analytics API app, based on GRANDstack starter",
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

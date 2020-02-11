@@ -156,7 +156,7 @@ class App extends Component {
                 noWrap
                 className={classes.title}
               >
-                Welcome To GRANDstack
+                Welcome To People Analytics
               </Typography>
             </Toolbar>
           </AppBar>
