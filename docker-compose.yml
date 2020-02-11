@@ -1,0 +1,95 @@
+version: "3"
+
+services:
+  neo4j:
+    image: convivio/neo4j:$NEO4J_TAG
+    container_name: "${PROJECT_NAME}_neo4j"
+    volumes: 
+      - graph-data:/data
+      - graph-logs:/logs
+      - ./neo4j/import:/import
+    ports:
+      - '7474:7474'
+      # - '7473:7473'
+      - '7687:7687'
+    environment:
+      - NEO4J_AUTH=neo4j/$NEO4J_PASSWORD
+      - NEO4J_HOST=$NEO4J_HOST
+      - NEO4J_dbms_security_procedures_unrestricted=apoc.*
+      - NEO4J_apoc_import_file_enabled=true
+      - NEO4J_apoc_export_file_enabled=true
+      - NEO4J_dbms_shell_enabled=true
+      # NEO4J_BOLT_PORT_NUMBER: $NEO4J_BOLT_PORT_NUMBER
+      # NEO4J_HTTP_PORT_NUMBER: $NEO4J_HTTP_PORT_NUMBER
+      # NEO4J_HTTPS_PORT_NUMBER: $NEO4J_HTTPS_PORT_NUMBER
+    networks:
+      - neo4j-network
+      - graph
+      - traefik
+    labels:
+      - 'traefik.backend=neo4j'
+      - 'traefik.port=$NEO4J_HTTP_PORT_NUMBER'
+      - 'traefik.frontend.rule=Host:${PROJECT_BASE_URL}'
+      - 'traefik.docker.network=traefik'
+  
+  api:
+    build: ./api
+    container_name: "${PROJECT_NAME}_api"
+    ports:
+      - 4001:4001
+    volumes:
+        - ./api:/app/
+    environment:
+      - NEO4J_URI=bolt://${PROJECT_NAME}_neo4j:${NEO4J_BOLT_PORT_NUMBER}
+      - NEO4J_USER=neo4j
+      - NEO4J_PASSWORD=${NEO4J_PASSWORD}
+      - GRAPHQL_LISTEN_PORT=${GRAPHQL_LISTEN_PORT}
+      - GRAPHQL_URI=http://${PROJECT_NAME}_api:4001/graphql
+    labels:
+      - 'traefik.backend=api'
+      - 'traefik.port=${GRAPHQL_LISTEN_PORT}'
+      - 'traefik.frontend.rule=Host:api.${PROJECT_BASE_URL}'
+      - 'traefik.docker.network=traefik'
+    depends_on:
+      - neo4j
+    networks:
+      - graph
+      - traefik
+
+  ui:
+    build: ./ui
+    container_name: "${PROJECT_NAME}_ui"
+    # ports:
+    #   - ${UI_LISTEN_PORT}:${UI_LISTEN_PORT}
+    volumes:
+      - ./ui:/app/
+    environment:
+      - REACT_APP_GRAPHQL_URI=/graphql
+      - PROXY=http://${PROJECT_NAME}_api:4001/graphql
+    labels:
+      - 'traefik.backend=ui'
+      - 'traefik.port=${UI_LISTEN_PORT}'
+      - 'traefik.frontend.rule=Host:ui.${PROJECT_BASE_URL}'
+      - 'traefik.docker.network=traefik'
+    links:
+    - api
+    depends_on:
+    - api
+    networks:
+      - graph
+      - traefik
+
+
+volumes:
+# Docker-sync for macOS users
+#  docker-sync:
+#    external: true
+  graph-data:
+  graph-logs:
+   
+networks:
+  traefik:
+    external: true
+  neo4j-network:
+    external: true
+  graph:
