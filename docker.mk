@@ -4,6 +4,19 @@ include .env
 
 default: up
 
+SHELL_ARG = ui
+
+# If the first argument is "shell"...
+ifeq (shell,$(firstword $(MAKECMDGOALS)))
+# and there is a second argument
+ifneq ($(word 2, $(MAKECMDGOALS)),)
+	# use the second argument for the container for a shell
+	SHELL_ARG := $(word 2, $(MAKECMDGOALS))
+endif
+endif
+
+CONTAINER = "$(PROJECT_NAME)_$(SHELL_ARG)"
+
 up:
 	@echo "Starting up containers for $(PROJECT_NAME)..."
 	docker-compose pull
@@ -24,7 +37,7 @@ ps:
 	@docker ps --filter name='$(PROJECT_NAME)*'
 
 shell:
-	docker exec -ti -e COLUMNS=$(shell tput cols) -e LINES=$(shell tput lines) $(shell docker ps --filter name='$(PROJECT_NAME)_ui' --format "{{ .ID }}") sh
+	docker exec -ti -e COLUMNS=$(shell tput cols) -e LINES=$(shell tput lines) $(shell docker ps --filter name="$(CONTAINER)" --format "{{ .ID }}") sh
 
 logs:
 	@docker-compose logs -f $(filter-out $@,$(MAKECMDGOALS))
