@@ -10,6 +10,8 @@ var _express2 = _interopRequireDefault(_express);
 
 var _neo4jDriver = require("neo4j-driver");
 
+var _neo4jDriver2 = _interopRequireDefault(_neo4jDriver);
+
 var _neo4jGraphqlJs = require("neo4j-graphql-js");
 
 var _dotenv = require("dotenv");
@@ -20,6 +22,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 // set environment variables from ../.env
 _dotenv2.default.config();
+// import { makeExecutableSchema } from "graphql-tools";
+
 
 var app = (0, _express2.default)();
 
@@ -32,7 +36,8 @@ var app = (0, _express2.default)();
  */
 
 var schema = (0, _neo4jGraphqlJs.makeAugmentedSchema)({
-  typeDefs: _graphqlSchema.typeDefs
+  typeDefs: _graphqlSchema.typeDefs,
+  myResolverMap: _graphqlSchema.myResolverMap
 });
 
 /*
@@ -40,7 +45,7 @@ var schema = (0, _neo4jGraphqlJs.makeAugmentedSchema)({
  * using credentials specified as environment variables
  * with fallback to defaults
  */
-var driver = _neo4jDriver.v1.driver(process.env.NEO4J_URI || "bolt://localhost:7687", _neo4jDriver.v1.auth.basic(process.env.NEO4J_USER || "neo4j", process.env.NEO4J_PASSWORD || "neo4j"));
+var driver = _neo4jDriver2.default.driver(process.env.NEO4J_URI || "bolt://localhost:7687", _neo4jDriver2.default.auth.basic(process.env.NEO4J_USER || "neo4j", process.env.NEO4J_PASSWORD || "neo4j"));
 
 /*
  * Create a new ApolloServer instance, serving the GraphQL schema

@@ -1,0 +1,21 @@
+type Person {
+    id: Int!
+    name: String
+    givenName: String
+    familyName: String
+    fullName: String
+    honorificPrefix: String
+    honorificSuffix: String
+    pronouns: String
+}
+
+type Ethnicity {
+    id: Int!
+    name: String
+    group: [EthnicityGroup] @cypher(statement: "MATCH (this)-[:categoryOf]-(g) RETURN g")
+}
+
+type EthnicityGroup {
+    id: Int!
+    name: String
+}
