@@ -33,18 +33,19 @@ const styles = theme => ({
   }
 });
 
-const GET_USER = gql`
-  query usersPaginateQuery(
+const GET_PERSON = gql`
+  query personPaginateQuery(
     $first: Int
     $offset: Int
-    $orderBy: [_UserOrdering]
-    $filter: _UserFilter
+    $orderBy: [_PersonOrdering]
+    $filter: _PersonFilter
   ) {
-    User(first: $first, offset: $offset, orderBy: $orderBy, filter: $filter) {
-      id
+    Person(first: $first, offset: $offset, orderBy: $orderBy, filter: $filter) {
+      _id
       name
-      avgStars
-      numReviews
+      birthDate {
+        formatted
+      }
     }
   }
 `;
@@ -63,7 +64,7 @@ function UserList(props) {
       : {};
   };
 
-  const { loading, data, error } = useQuery(GET_USER, {
+  const { loading, data, error } = useQuery(GET_PERSON, {
     variables: {
       first: rowsPerPage,
       offset: rowsPerPage * page,
@@ -96,11 +97,11 @@ function UserList(props) {
   return (
     <Paper className={classes.root}>
       <Typography variant="h2" gutterBottom>
-        User List
+        People
       </Typography>
       <TextField
         id="search"
-        label="User Name Contains"
+        label="Name Contains"
         className={classes.textField}
         value={filterState.usernameFilter}
         onChange={handleFilterChange("usernameFilter")}
@@ -131,47 +132,17 @@ function UserList(props) {
                   </TableSortLabel>
                 </Tooltip>
               </TableCell>
-              <TableCell
-                key="avgStars"
-                sortDirection={orderBy === "avgStars" ? order : false}
-              >
-                <Tooltip title="Sort" placement="bottom-end" enterDelay={300}>
-                  <TableSortLabel
-                    active={orderBy === "avgStars"}
-                    direction={order}
-                    onClick={() => handleSortRequest("avgStars")}
-                  >
-                    Average Stars
-                  </TableSortLabel>
-                </Tooltip>
-              </TableCell>
-              <TableCell
-                key="numReviews"
-                sortDirection={orderBy === "numReviews" ? order : false}
-              >
-                <Tooltip title="Sort" placement="bottom-start" enterDelay={300}>
-                  <TableSortLabel
-                    active={orderBy === "numReviews"}
-                    direction={order}
-                    onClick={() => handleSortRequest("numReviews")}
-                  >
-                    Number of Reviews
-                  </TableSortLabel>
-                </Tooltip>
-              </TableCell>
+              <TableCell key="birthDate">Birth date</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.User.map(n => {
+            {data.Person.map(n => {
               return (
-                <TableRow key={n.id}>
+                <TableRow key={n._id}>
                   <TableCell component="th" scope="row">
                     {n.name}
                   </TableCell>
-                  <TableCell>
-                    {n.avgStars ? n.avgStars.toFixed(2) : "-"}
-                  </TableCell>
-                  <TableCell>{n.numReviews}</TableCell>
+                  <TableCell>{n.birthDate.formatted}</TableCell>
                 </TableRow>
               );
             })}

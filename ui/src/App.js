@@ -185,21 +185,11 @@ class App extends Component {
                   <ListItemText primary="Home" />
                 </ListItem>
 
-                <ListItem
-                  button
-                  onClick={() => this.setSelectedView("Businesses")}
-                >
-                  <ListItemIcon>
-                    <EventNoteIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Businesses" />
-                </ListItem>
-
                 <ListItem button onClick={() => this.setSelectedView("Users")}>
                   <ListItemIcon>
                     <PeopleIcon />
                   </ListItemIcon>
-                  <ListItemText primary="Users" />
+                  <ListItemText primary="People" />
                 </ListItem>
               </div>
             </List>
