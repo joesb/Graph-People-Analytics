@@ -24,6 +24,7 @@ import {
 } from "@material-ui/icons";
 
 import UserList from "./UserList";
+import UserVis from "./UserVis";
 import classNames from "classnames";
 
 const drawerWidth = 240;
@@ -191,6 +192,16 @@ class App extends Component {
                   </ListItemIcon>
                   <ListItemText primary="People" />
                 </ListItem>
+
+                <ListItem
+                  button
+                  onClick={() => this.setSelectedView("UserVis")}
+                >
+                  <ListItemIcon>
+                    <PeopleIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="People Vis" />
+                </ListItem>
               </div>
             </List>
           </Drawer>
@@ -202,6 +213,7 @@ class App extends Component {
               {this.state.selectedView === "Home" ? <UserList /> : null}
               {this.state.selectedView === "Businesses" ? <div /> : null}
               {this.state.selectedView === "Users" ? <UserList /> : null}
+              {this.state.selectedView === "UserVis" ? <UserVis /> : null}
             </Typography>
           </main>
         </div>
